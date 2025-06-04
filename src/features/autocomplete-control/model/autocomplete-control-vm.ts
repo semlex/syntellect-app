@@ -13,7 +13,9 @@ export class AutocompleteViewModel<T> {
     private readonly getLabel: (item: T) => string,
   ) {
     makeAutoObservable(this);
-    this.debouncedGetSuggestions = debounce(this.getSuggestions.bind(this), 300);
+
+    this.getSuggestions();
+    this.debouncedGetSuggestions = debounce(this.getSuggestions.bind(this), 250);
   }
 
   setValue(newValue: string) {
