@@ -21,7 +21,7 @@ const AutocompleteControl = observer(
     getLabel,
     renderListItem,
   }: AutocompleteControlProps<T>) => {
-    const vm = useAutocompleteControlViewModel(maxSuggestions, fetchSuggestions, getLabel);
+    const viewModel = useAutocompleteControlViewModel(maxSuggestions, fetchSuggestions, getLabel);
 
     const [isFocused, setIsFocused] = useState(false);
 
@@ -31,23 +31,23 @@ const AutocompleteControl = observer(
     return (
       <div className={styles.container}>
         <Input
-          value={vm.value}
+          value={viewModel.value}
           onChange={(e) => {
-            vm.setValue(e.target.value);
+            viewModel.setValue(e.target.value);
           }}
           placeholder={placeholder}
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
 
-        {isFocused && !vm.isLoading && vm.suggestions.length > 0 && (
+        {isFocused && !viewModel.isLoading && viewModel.suggestions.length > 0 && (
           <ul className={styles.suggestions}>
-            {vm.suggestions.map((item, idx) => (
+            {viewModel.suggestions.map((item, idx) => (
               <li
                 className={styles.suggestion}
                 key={idx}
                 onMouseDown={() => {
-                  vm.selectSuggestion(item);
+                  viewModel.selectSuggestion(item);
                 }}
               >
                 {renderListItem(item)}
