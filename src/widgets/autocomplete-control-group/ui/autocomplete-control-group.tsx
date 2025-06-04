@@ -1,5 +1,6 @@
 import { AutocompleteControl } from 'features/autocomplete-control';
 import { CountryInfo, CountryListItem, getCountriesByName } from 'entities/country';
+
 import styles from './autocomplete-control-group.module.scss';
 
 const AutocompleteControlGroup = () => {
