@@ -5,38 +5,39 @@ export class AutocompleteViewModel<T> {
   value = '';
   suggestions: T[] = [];
   isLoading = false;
-  private debouncedGetSuggestions: () => void;
+
+  private _debouncedGetSuggestions: () => void;
 
   constructor(
-    private readonly maxSuggestions: number,
-    private readonly fetchSuggestions: (query: string) => Promise<T[]>,
-    private readonly getLabel: (item: T) => string,
+    private readonly _maxSuggestions: number,
+    private readonly _fetchSuggestions: (query: string) => Promise<T[]>,
+    private readonly _getLabel: (item: T) => string,
   ) {
     makeAutoObservable(this);
 
-    this.getSuggestions();
-    this.debouncedGetSuggestions = debounce(this.getSuggestions.bind(this), 250);
+    this._getSuggestions();
+    this._debouncedGetSuggestions = debounce(this._getSuggestions.bind(this), 250);
   }
 
   setValue(newValue: string) {
     this.value = newValue;
-    this.debouncedGetSuggestions();
+    this._debouncedGetSuggestions();
   }
 
   selectSuggestion(suggestion: T) {
-    this.value = this.getLabel(suggestion);
+    this.value = this._getLabel(suggestion);
     this.suggestions = [];
   }
 
-  private async getSuggestions() {
+  private async _getSuggestions() {
     this.isLoading = true;
 
     try {
-      const data = await this.fetchSuggestions(this.value);
-      const unique = Array.from(new Map(data.map((item) => [this.getLabel(item), item])).values());
+      const data = await this._fetchSuggestions(this.value);
+      const unique = Array.from(new Map(data.map((item) => [this._getLabel(item), item])).values());
 
       runInAction(() => {
-        this.suggestions = unique.slice(0, this.maxSuggestions);
+        this.suggestions = unique.slice(0, this._maxSuggestions);
       });
     } catch (e) {
       console.error('Error while fetching suggestions:', e);
