@@ -2,9 +2,9 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { debounce } from 'shared/lib';
 
 export class AutocompleteViewModel<T> {
-  value = '';
-  suggestions: T[] = [];
-  isLoading = false;
+  private _value = '';
+  private _suggestions: T[] = [];
+  private _isLoading = false;
 
   private _debouncedGetSuggestions: () => void;
 
@@ -19,31 +19,43 @@ export class AutocompleteViewModel<T> {
     this._debouncedGetSuggestions = debounce(this._getSuggestions.bind(this), 250);
   }
 
-  setValue(newValue: string) {
-    this.value = newValue;
+  get value() {
+    return this._value;
+  }
+
+  get suggestions() {
+    return this._suggestions;
+  }
+
+  get isLoading() {
+    return this._isLoading;
+  }
+
+  setValue(value: string) {
+    this._value = value;
     this._debouncedGetSuggestions();
   }
 
   selectSuggestion(suggestion: T) {
-    this.value = this._getLabel(suggestion);
-    this.suggestions = [];
+    this._value = this._getLabel(suggestion);
+    this._suggestions = [];
   }
 
   private async _getSuggestions() {
-    this.isLoading = true;
+    this._isLoading = true;
 
     try {
       const data = await this._fetchSuggestions(this.value);
       const unique = Array.from(new Map(data.map((item) => [this._getLabel(item), item])).values());
 
       runInAction(() => {
-        this.suggestions = unique.slice(0, this._maxSuggestions);
+        this._suggestions = unique.slice(0, this._maxSuggestions);
       });
     } catch (e) {
       console.error('Error while fetching suggestions:', e);
     } finally {
       runInAction(() => {
-        this.isLoading = false;
+        this._isLoading = false;
       });
     }
   }

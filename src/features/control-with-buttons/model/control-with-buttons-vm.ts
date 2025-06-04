@@ -1,13 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
 export class ControlWithButtonsViewModel {
-  value = '';
+  private _value = '';
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setValue(newValue: string) {
-    this.value = newValue;
+  get value() {
+    return this._value;
+  }
+
+  setValue(value: string) {
+    this._value = value;
   }
 }
