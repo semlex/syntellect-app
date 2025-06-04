@@ -1,4 +1,5 @@
 import { ControlWithButtons } from 'features/control-with-buttons';
+import { checkIsNumber } from 'shared/lib';
 
 import styles from './control-with-buttons-group.module.scss';
 
@@ -18,8 +19,7 @@ const ControlWithButtonGroup = () => {
           {
             text: 'Проверить число',
             callback: (vm) => {
-              const value = vm.value;
-              if (value.trim() && !Number.isNaN(Number(value))) alert(value);
+              checkIsNumber(vm.value) && alert(vm.value.trim());
             },
           },
         ]}
